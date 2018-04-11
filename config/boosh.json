@@ -1,11 +1,11 @@
 {
     "credentials": {
-        "passname": "BAMBOO_USERNAME",
-        "password": "BAMBOO_PASSWORD"
+        "passname": "{BAMBOO_USERNAME}",
+        "password": "{BAMBOO_PASSWORD}"
     },
     "url" : {
-        "bambooUrl": "BAMBOO_URL",
-        "bambooPort": "BAMBOO_PORT",
-        "deploymentVersionId": "BAMBOO_DEP_VERSION_ID"
+        "bambooUrl": "{BAMBOO_URL}",
+        "bambooPort": "{BAMBOO_PORT}",
+        "deploymentVersionId": "{BAMBOO_DEP_VERSION_ID}"
     }
 }

@@ -27,7 +27,8 @@ function allocate() {
 # Manupulating the options given
 if [[ $# -gt 0 ]]; then
     case ${1} in
-        dvs)    validOption=1; allocate ${@}  ;;
+        dvs)    validOption=1; allocate ${@}    ;;
+        search) validOption=1; allocate ${@}    ;;
         *)  validOption=0   ;;
     esac
 else
