@@ -1,9 +1,0 @@
-{
-    "_comment": "Configuration file for the bamboo API URL's.",
-    "dvs":{
-        "getStatus": "rest/api/latest/deploy/version/{deploymentVersionId}/status.json"
-    },
-    "search": {
-        "getPlans": "rest/api/latest/search/plans.json"
-    }
-}
