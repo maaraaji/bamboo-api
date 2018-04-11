@@ -12,17 +12,15 @@ validOption=0
 callName="null"
 callMethod="null"
 
-
-# Usage function
-function usage() {
-    echo "Ask something that known to Bamboo buddy! Yethavathu kezhu machi!"
-}
+# Usage sourcing
+. $(dirname ${0})/usage.sh
 
 # allocate the arguments
 function allocate() {
-    callName=${1}
-    callMethod=${2}
-    callInName=${3}
+    callMethod=${1}
+    callName=${2}
+    callInMethod=${3}
+    callInName=${4}
 }
 
 # Manupulating the options given
@@ -30,15 +28,17 @@ if [[ $# -gt 0 ]]; then
     case ${1} in
         dvs)    validOption=1; allocate ${@}    ;;
         search) validOption=1; allocate ${@}    ;;
-        *)  validOption=0   ;;
+        *)  usage  ;;
     esac
 else
     usage
+    exit 1
 fi
 
 # Make a bamboo call if valid options are given
 if [[ ${validOption} == 1 ]]; then 
-    . $(dirname ${0})/subCmd/bambooCalls.sh ${callName} ${callMethod} ${callInName}; 
-else 
+    . $(dirname ${0})/subCmd/bambooCalls.sh ${callMethod} ${callName} ${callInMethod} ${callInName}; 
+else
     usage; 
+    exit 1
 fi

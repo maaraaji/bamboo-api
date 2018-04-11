@@ -6,13 +6,14 @@
     "search": {
         "plans": {
             "uri": "rest/api/latest/search/plans.json",
+            "howMany": "size",
             "inPlans": {
+                "parent": "searchResults[]",
                 "getId": "searchEntity.id",
                 "getProjectName": "searchEntity.projectName",
                 "getPlanName": "searchEntity.planName",
                 "getConfiguredBranch": "searchEntity.branchName",
-                "getDescription": "searchEntity.description",
-                "howMany": "size"
+                "getDescription": "searchEntity.description"
             }
         },
         "users": "rest/api/latest/search/users.json"

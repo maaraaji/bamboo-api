@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Variables
+apiOutput=""
+
+# Usage sourcing
+. $(dirname ${0})/usage.sh
+
 # Get the username
 getPassname=$(cat $(pwd)/config/boosh.json | jq -r '.credentials.passname')
 passname=$(echo "${getPassname}" | sed "s|{BAMBOO_USERNAME}|${BAMBOO_USERNAME}|g")
@@ -22,7 +28,18 @@ bambooPort=$(echo "${getBambooPort}" | sed "s|{BAMBOO_PORT}|${BAMBOO_PORT}|g")
 
 # API_Output
 # echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1}"
-apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})")
-echo ${apiOutput}
+if [[ ! ${2} = "" && ! ${3} = "" ]]; then
+    apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})" | jq -r .${2}.${3})
+    # echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1} | jq -r .${2}.${3}"
+elif [[ ${3} = "" ]]; then
+    apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})" | jq -r .${2})
+else
+    apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})")
+    # echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1}"
+fi
+
+# Print appropriate output
+if [[ "${apiOutput}" = "null" ]]; then usage; exit 1;
+else echo ${apiOutput}; fi
 
 
