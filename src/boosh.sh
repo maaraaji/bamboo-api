@@ -15,13 +15,14 @@ callMethod="null"
 
 # Usage function
 function usage() {
-    echo "Ask something to Bamboo buddy! Yethavathu kezhu machi!"
+    echo "Ask something that known to Bamboo buddy! Yethavathu kezhu machi!"
 }
 
 # allocate the arguments
 function allocate() {
     callName=${1}
     callMethod=${2}
+    callInName=${3}
 }
 
 # Manupulating the options given
@@ -36,4 +37,8 @@ else
 fi
 
 # Make a bamboo call if valid options are given
-if [[ ${validOption} == 1 ]]; then . $(dirname ${0})/subCmd/bambooCalls.sh "${callName} ${callMethod}"; else usage; fi
+if [[ ${validOption} == 1 ]]; then 
+    . $(dirname ${0})/subCmd/bambooCalls.sh ${callName} ${callMethod} ${callInName}; 
+else 
+    usage; 
+fi

@@ -21,6 +21,8 @@ bambooPort=$(echo "${getBambooPort}" | sed "s|{BAMBOO_PORT}|${BAMBOO_PORT}|g")
 # echo ${bambooPort}
 
 # API_Output
-echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})"
+# echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1}"
+apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})")
+echo ${apiOutput}
 
 
