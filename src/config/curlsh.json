@@ -27,7 +27,7 @@
         },
         "users": "rest/api/latest/search/users.json"
     },
-    "project":{
+    "projects":{
         "uri": "rest/api/latest/project.json",
         "inProjects": {
             "parent": "projects.project[]",

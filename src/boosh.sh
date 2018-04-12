@@ -25,12 +25,8 @@ function allocate() {
 
 # Manupulating the options given
 if [[ $# -gt 0 ]]; then
-    case ${1} in
-        dvs)    validOption=1; allocate ${@}    ;;
-        search) validOption=1; allocate ${@}    ;;
-        project) validOption=1; allocate ${@}   ;;
-        *)  usage  ;;
-    esac
+    commandValid=$(cat $(pwd)/config/curlsh.json | jq 'has("'${1}'")')
+    if [[ ${commandValid} = "true" ]]; then validOption=1; allocate ${@}; else usage; fi
 else
     usage
     exit 1
