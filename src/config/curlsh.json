@@ -28,10 +28,10 @@
         "users": "rest/api/latest/search/users.json"
     },
     "project":{
-        "uri": "/rest/api/latest/project.json",
+        "uri": "rest/api/latest/project.json",
         "inProjects": {
             "parent": "projects.project[]",
-            "getKey": "key",
+            "getKey": "projects.project[].key",
             "getName": "name"
         }
     }
