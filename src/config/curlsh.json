@@ -1,5 +1,5 @@
 {
-    "_comment": "Configuration file for the bamboo API URL's.",
+    "_usage": "Configuration file for the bamboo API URL's.",
     "dvs":{
         "getStatus": "rest/api/latest/deploy/version/{deploymentVersionId}/status.json"
     },
@@ -8,14 +8,31 @@
             "uri": "rest/api/latest/search/plans.json",
             "howMany": "size",
             "inPlans": {
-                "parent": "searchResults[]",
-                "getId": "searchEntity.id",
-                "getProjectName": "searchEntity.projectName",
-                "getPlanName": "searchEntity.planName",
-                "getConfiguredBranch": "searchEntity.branchName",
-                "getDescription": "searchEntity.description"
+                "parent": "",
+                "getId": "searchResults[].searchEntity.id",
+                "getProjectName": "searchResults[].searchEntity.projectName",
+                "getPlanName": "searchResults[].searchEntity.planName",
+                "getConfiguredBranch": "searchResults[].searchEntity.branchName",
+                "getDescription": "searchResults[].searchEntity.description"
             }
         },
+        "project":{
+          "uri": "rest/api/latest/search/projects.json",
+          "count": "size",
+          "sResult": {
+              "parent": "searchResults[]",
+              "getmeid": "id",
+              "needPN": "projectName"
+          }
+        },
         "users": "rest/api/latest/search/users.json"
+    },
+    "project":{
+        "uri": "/rest/api/latest/project.json",
+        "inProjects": {
+            "parent": "projects.project[]",
+            "getKey": "key",
+            "getName": "name"
+        }
     }
 }

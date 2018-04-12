@@ -27,6 +27,7 @@ bambooPort=$(echo "${getBambooPort}" | sed "s|{BAMBOO_PORT}|${BAMBOO_PORT}|g")
 # echo ${bambooPort}
 
 # API_Output
+# echo ${3}
 # echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1}"
 if [[ ! ${2} = "" && ! ${3} = "" ]]; then
     apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})" | jq -r .${2}.${3})
@@ -35,7 +36,7 @@ elif [[ ${3} = "" ]]; then
     apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})" | jq -r .${2})
 else
     apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})")
-    # echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1}"
+    echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1}"
 fi
 
 # Print appropriate output

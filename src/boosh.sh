@@ -28,6 +28,7 @@ if [[ $# -gt 0 ]]; then
     case ${1} in
         dvs)    validOption=1; allocate ${@}    ;;
         search) validOption=1; allocate ${@}    ;;
+        project) validOption=1; allocate ${@}   ;;
         *)  usage  ;;
     esac
 else
