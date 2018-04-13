@@ -2,23 +2,44 @@
 
 # Variables
 argumentValues=""
-echo $@
+# echo $@
+
+function customPrint() {
+    # echo "${1}"
+    echo "${1}"
+}
+
+# Function to get the Value from the string with format key=value
+function getValue() {
+    echo ${1} | cut -d "=" -f 2
+}
+
+# Function to get the key from the string with format key=value
+function getKey() {
+    echo ${1} | cut -d "=" -f 1
+}
+
+function checkForQuery() {
+    echo $(getKey ${1})
+}
+
 # Get the URI from the curlsh.json within whichever object (dict or hash) you configured
 function getUriAndArgumentValues() {
     arguments=""
     success=0
     for X in ${@}; do
         arguments="${arguments}.${X}"
+        if [[ ${arguments} =~ "=" ]]; then arguments=$(checkForQuery "${arguments}"); fi
         case ${success} in
-            0)  if [[ $(cat /Users/gk/GK/GURU/Open_Source/bamboo-api/src/config/curlsh.json | jq ${arguments} | jq 'has("uri")') = "true" ]]; then
+            0)  if [[ $(cat $(pwd)/config/curlsh.json | jq ${arguments} | jq 'has("uri")') = "true" ]]; then
                     getApiUrl=$(cat $(pwd)/config/curlsh.json | jq -r ${arguments}.uri); success=1;
                 fi  ;;
         esac
     done
-    argumentValues="$(cat /Users/gk/GK/GURU/Open_Source/bamboo-api/src/config/curlsh.json | jq -r ${arguments})"
+    argumentValues="$(cat $(pwd)/config/curlsh.json | jq -r ${arguments})"
     # echo ${arguments}
     # echo ${argumentValues}
-    if [[ "${argumentValues}" =~ "{" ]]; then echo "Buddy! What do you want ${X}?"; exit 1; fi
+    if [[ "${argumentValues}" =~ "{" ]]; then echo "Buddy! What do you want in ${X}?"; exit 1; fi
     if [[ ${success} -eq 0 ]]; then echo "Buddy! If the child dicts don't have API URI, then update the API URI for ${arguments} in curls.json or try indepth."; exit 1; fi
 }
 getUriAndArgumentValues ${@}

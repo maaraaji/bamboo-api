@@ -6,13 +6,11 @@
     "search": {
         "plans": {
             "uri": "rest/api/latest/search/plans.json",
+            "query": {
+                "searchTerm": "plans.uri"
+            },
             "howMany": "size",
             "inPlans": {
-                "I": {
-                    "need": {
-                        "id": "searchResults[].searchEntity.id"
-                    }
-                },
                 "getId": "searchResults[].searchEntity.id",
                 "getProjectName": "searchResults[].searchEntity.projectName",
                 "getPlanName": "searchResults[].searchEntity.planName",
@@ -25,7 +23,7 @@
           "count": "size",
           "sResult": {
               "getmeid": "searchResults[].id",
-              "needPN": "searchResults[].projectName"
+              "needPN": "searchResults[].searchEntity.projectName"
           }
         },
         "users": {
