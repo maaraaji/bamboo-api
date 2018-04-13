@@ -27,20 +27,15 @@ bambooPort=$(echo "${getBambooPort}" | sed "s|{BAMBOO_PORT}|${BAMBOO_PORT}|g")
 # echo ${bambooPort}
 
 # API_Output
-# echo ${3}
-# echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1}"
-if [[ ! ${2} = "" && ! ${3} = "" ]]; then
-    apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})" | jq -r .${2}.${3})
-    # echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1} | jq -r .${2}.${3}"
-elif [[ ${3} = "" ]]; then
-    apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})" | jq -r .${2})
-else
-    apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})")
-    echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1}"
-fi
+# echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1} | jq -r .${2}"
+apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})" | jq .${2})
 
+#Check if it has errors
+haveErrors=$(echo ${apiOutput} | jq 'has("errors")' 2>/dev/null)
 # Print appropriate output
 if [[ "${apiOutput}" = "null" ]]; then usage; exit 1;
+elif [[ "${haveErrors}" = "true" ]]; then
+    echo ${apiOutput} | jq -r '.errors[]'
 else echo ${apiOutput}; fi
 
 

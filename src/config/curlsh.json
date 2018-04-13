@@ -6,9 +6,11 @@
     "search": {
         "plans": {
             "uri": "rest/api/latest/search/plans.json",
+            "query": {
+                "searchTerm": "plans.uri"
+            },
             "howMany": "size",
             "inPlans": {
-                "parent": "",
                 "getId": "searchResults[].searchEntity.id",
                 "getProjectName": "searchResults[].searchEntity.projectName",
                 "getPlanName": "searchResults[].searchEntity.planName",
@@ -20,19 +22,27 @@
           "uri": "rest/api/latest/search/projects.json",
           "count": "size",
           "sResult": {
-              "parent": "searchResults[]",
-              "getmeid": "id",
-              "needPN": "projectName"
+              "getmeid": "searchResults[].id",
+              "needPN": "searchResults[].searchEntity.projectName"
           }
         },
-        "users": "rest/api/latest/search/users.json"
+        "users": {
+            "uri": "rest/api/latest/search/users.json",
+            "specifics": ["users"]
+        }
     },
-    "project":{
-        "uri": "/rest/api/latest/project.json",
+    "projects":{
+        "uri": "rest/api/latest/project.json",
         "inProjects": {
             "parent": "projects.project[]",
-            "getKey": "key",
-            "getName": "name"
+            "getKey": "projects.project[].key",
+            "getName": "projects.project[].name"
+        }
+    },
+    "s": {
+        "uri": "rest/api/latest/server.json",
+        "onSd": {
+            "isItRunning": "state"
         }
     }
 }
