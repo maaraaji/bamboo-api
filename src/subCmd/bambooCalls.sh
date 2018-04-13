@@ -2,7 +2,7 @@
 
 # Variables
 argumentValues=""
-
+echo $@
 # Get the URI from the curlsh.json within whichever object (dict or hash) you configured
 function getUriAndArgumentValues() {
     arguments=""
@@ -13,10 +13,11 @@ function getUriAndArgumentValues() {
             0)  if [[ $(cat /Users/gk/GK/GURU/Open_Source/bamboo-api/src/config/curlsh.json | jq ${arguments} | jq 'has("uri")') = "true" ]]; then
                     getApiUrl=$(cat $(pwd)/config/curlsh.json | jq -r ${arguments}.uri); success=1;
                 fi  ;;
-            1)
-                argumentValues="$(cat /Users/gk/GK/GURU/Open_Source/bamboo-api/src/config/curlsh.json | jq -r ${arguments})"
         esac
     done
+    argumentValues="$(cat /Users/gk/GK/GURU/Open_Source/bamboo-api/src/config/curlsh.json | jq -r ${arguments})"
+    # echo ${arguments}
+    # echo ${argumentValues}
     if [[ "${argumentValues}" =~ "{" ]]; then echo "Buddy! What do you want ${X}?"; exit 1; fi
     if [[ ${success} -eq 0 ]]; then echo "Buddy! If the child dicts don't have API URI, then update the API URI for ${arguments} in curls.json or try indepth."; exit 1; fi
 }
