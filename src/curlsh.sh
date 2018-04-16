@@ -29,7 +29,7 @@ bambooPort=$(echo "${getBambooPort}" | sed "s|{BAMBOO_PORT}|${BAMBOO_PORT}|g")
 # echo ${bambooPort}
 
 # API_Output
-echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1} | jq -r '${jqParam}'"
+# echo "curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1} | jq -r '${jqParam}'"
 commandToGetApiOutput="$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1} | jq -r "${jqParam}")"
 # apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${bambooPort}/${1})" | jq -r '${jqParam}')
 apiOutput="$(echo ${commandToGetApiOutput})"

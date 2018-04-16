@@ -16,12 +16,12 @@ dir="$(dirname ${0})"
 # allocate the arguments
 function allocate() {
     arguments=${@}
-    for x in ${*}; do
-        echo $x
-    done
     if [[ ! $(tr ' ' '\n' <<< "${@}" | awk '/when/{getline;print;}') = "" ]]; then
-        when=$(tr ' ' '\n' <<< "${@}" | awk '/when/{getline;print;}')
-        arguments=$(echo ${arguments} | sed "s|when ${when}||g")
+        when=$(echo ${arguments} | awk -F"when" '{print $2}')
+        whenWithWhen="when $(echo $(echo ${arguments} | awk -F"when" '{print $2}'))"
+        arguments="${arguments/${whenWithWhen}/}"
+        # when=$(tr ' ' '\n' <<< "${@}" | awk '/when/{getline;print;}')
+        # arguments=$(echo ${arguments} | sed "s|when ${when}||g")
     fi
 }
 
@@ -37,6 +37,8 @@ fi
 # Make a bamboo call if valid options are given
 if [[ ${validOption} == 1 ]]; then 
     # . $(dirname ${0})/subCmd/bambooCalls.sh "${arguments}"; 
+    echo A: ${arguments}
+    echo W: ${when}
     if [[ ! "${when}" = "" ]]; then
         . $(dirname ${0})/subCmd/apiCalls.sh "${arguments}" "${when}";
     else

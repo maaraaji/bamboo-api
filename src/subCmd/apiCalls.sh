@@ -1,7 +1,8 @@
 #!/bin/bash
 
 passedArguments="${1}"
-whenArguments="${2}"
+whenArguments=$(echo "${2}" | sed 's|\"||g')
+echo ${whenArguments}
 queryParams=""
 uriEnd=""
 dir="$(dirname ${0})"
