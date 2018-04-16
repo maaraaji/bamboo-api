@@ -18,16 +18,17 @@ function allocate() {
 
 # Manupulating the options given
 if [[ $# -gt 0 ]]; then
-    commandValid=$(cat $(pwd)/config/curlsh.json | jq 'has("'${1}'")')
+    commands=$(echo "${1}" | cut -d ':' -f '1')
+    commandValid=$(cat $(pwd)/config/curlsh.json | jq 'has("'${commands}'")')
     if [[ ${commandValid} = "true" ]]; then validOption=1; allocate ${@}; else usage; fi
 else
     usage
     exit 1
 fi
-
 # Make a bamboo call if valid options are given
 if [[ ${validOption} == 1 ]]; then 
-    . $(dirname ${0})/subCmd/bambooCalls.sh ${arguments}; 
+    # . $(dirname ${0})/subCmd/bambooCalls.sh "${arguments}"; 
+    . $(dirname ${0})/subCmd/apiCalls.sh "${arguments}"; 
 else
     usage; 
     exit 1

@@ -33,7 +33,7 @@ apiOutput=$(echo "$(curl -s -k -u ${passname}:${password} http://${bambooUrl}:${
 #Check if it has errors
 haveErrors=$(echo ${apiOutput} | jq 'has("errors")' 2>/dev/null)
 # Print appropriate output
-if [[ "${apiOutput}" = "null" ]]; then usage; exit 1;
+if [[ "${apiOutput}" = "null" || "${apiOutput}" = "" ]]; then usage; exit 1;
 elif [[ "${haveErrors}" = "true" ]]; then
     echo ${apiOutput} | jq -r '.errors[]'
 else echo ${apiOutput}; fi

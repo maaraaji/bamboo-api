@@ -7,7 +7,11 @@
         "plans": {
             "uri": "rest/api/latest/search/plans.json",
             "query": {
-                "searchTerm": "plans.uri"
+                "after": {
+                    "search": "?searchTerm",
+                    "max": "max-result"
+                },
+                "end": "true"
             },
             "howMany": "size",
             "inPlans": {
@@ -32,11 +36,23 @@
         }
     },
     "projects":{
-        "uri": "rest/api/latest/project.json",
+        "uri": "rest/api/latest/project",
+        "query": {
+            "after" : {
+                "brief" : "expand",
+                "max": 1
+            },
+            "end" : "true"
+        },
         "inProjects": {
             "parent": "projects.project[]",
             "getKey": "projects.project[].key",
             "getName": "projects.project[].name"
+        },
+        "how" : {
+            "many": {
+                "plans": "plans.size"
+            }
         }
     },
     "s": {
