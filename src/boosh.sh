@@ -7,6 +7,8 @@ U=$(tput smul)
 
 # Option checks
 validOption=0
+when=""
+dir="$(dirname ${0})"
 
 # Usage sourcing
 . $(dirname ${0})/usage.sh
@@ -14,12 +16,19 @@ validOption=0
 # allocate the arguments
 function allocate() {
     arguments=${@}
+    for x in ${*}; do
+        echo $x
+    done
+    if [[ ! $(tr ' ' '\n' <<< "${@}" | awk '/when/{getline;print;}') = "" ]]; then
+        when=$(tr ' ' '\n' <<< "${@}" | awk '/when/{getline;print;}')
+        arguments=$(echo ${arguments} | sed "s|when ${when}||g")
+    fi
 }
 
 # Manupulating the options given
 if [[ $# -gt 0 ]]; then
     commands=$(echo "${1}" | cut -d ':' -f '1')
-    commandValid=$(cat $(pwd)/config/curlsh.json | jq 'has("'${commands}'")')
+    commandValid=$(cat ${dir}/config/curlsh.json | jq 'has("'${commands}'")')
     if [[ ${commandValid} = "true" ]]; then validOption=1; allocate ${@}; else usage; fi
 else
     usage
@@ -28,7 +37,11 @@ fi
 # Make a bamboo call if valid options are given
 if [[ ${validOption} == 1 ]]; then 
     # . $(dirname ${0})/subCmd/bambooCalls.sh "${arguments}"; 
-    . $(dirname ${0})/subCmd/apiCalls.sh "${arguments}"; 
+    if [[ ! "${when}" = "" ]]; then
+        . $(dirname ${0})/subCmd/apiCalls.sh "${arguments}" "${when}";
+    else
+        . $(dirname ${0})/subCmd/apiCalls.sh "${arguments}"; 
+    fi
 else
     usage; 
     exit 1

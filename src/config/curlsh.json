@@ -8,10 +8,16 @@
             "uri": "rest/api/latest/search/plans.json",
             "query": {
                 "after": {
-                    "search": "?searchTerm",
+                    "search": "searchTerm",
                     "max": "max-result"
                 },
                 "end": "true"
+            },
+            "when": {
+                "selectObject":"",
+                "projName": "searchEntity.projectName",
+                "planName": "searchEntity.planName",
+                "description": "searchEntity.description"
             },
             "howMany": "size",
             "inPlans": {
@@ -40,14 +46,19 @@
         "query": {
             "after" : {
                 "brief" : "expand",
-                "max": 1
+                "max": "max-result"
             },
             "end" : "true"
         },
+        "when": {
+            "selectObject": "",
+            "planKey": "planKey.key"
+        },
         "inProjects": {
-            "parent": "projects.project[]",
-            "getKey": "projects.project[].key",
-            "getName": "projects.project[].name"
+            "getProjectKey": "key",
+            "getProjectName": "name",
+            "getPlanKey": "plans.plan[].planKey.key",
+            "getShortName": "plans.plan[].shortName"
         },
         "how" : {
             "many": {
