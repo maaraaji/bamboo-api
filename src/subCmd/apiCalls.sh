@@ -2,7 +2,8 @@
 
 passedArguments="${1}"
 whenArguments=$(echo "${2}" | sed 's|\"||g')
-echo ${whenArguments}
+# echo ${passedArguments}
+# echo ${whenArguments}
 queryParams=""
 uriEnd=""
 dir="$(dirname ${0})"
@@ -51,7 +52,7 @@ function processingQueries() {
             for y in ${query}; do
                 field="$(echo ${y} | cut -d "=" -f 1)"
                 fieldValue=$(echo ${y} | cut -d "=" -f 2)
-                if [[ ${field} = "end" ]]; then
+                if [[ ${field} = "which" ]]; then
                     getDictValueAndFullPath "${dir}/config/curlsh.json" "${whatNeedsQuery}.query" "${field}"
                     if [[ "${dictValue}" = "true" ]]; then
                         uriEnd=/${fieldValue}.json
@@ -79,6 +80,9 @@ function processingQueries() {
 function getUrlPathAndJqValues() {
     getDictValueAndFullPath "${dir}/config/curlsh.json" "${passedArguments}" "uri"
     apiUrl=${dictValue}
+    if [[ ! ${uriEnd} = "" ]]; then
+        apiUrl=${apiUrl/.json/}
+    fi
     # echo ${fullPath}
     argumentValues=".$(cat ${dir}/config/curlsh.json | jq -r ${fullPath})"
     # echo ${argumentValues}
@@ -98,7 +102,6 @@ function processingWhen() {
     getDictValueAndFullPath "${dir}/config/curlsh.json" "${whatNeedsQuery}.when" "selectObject"
     replaceWhen=${dictValue}
     argumentValues=$(echo ${argumentValues} | sed "s/\[\]./\[\]${withThis}\.${replaceWhen}/g")
-    # echo ${argumentValues}
     initGetDictFullPath
     initFieldValue
 }
