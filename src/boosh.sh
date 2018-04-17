@@ -27,7 +27,10 @@ function allocate() {
 
 # check if then is given
 if [[ $# -gt 0 ]]; then
-    thenCheck=$(echo ${1} | awk -F"then" '{print')
+    echo ${@}
+    echo ${@} | sed 's| next |/\n|g'
+    # echo "${thenCheck}"
+fi
 
 # Manupulating the options given
 if [[ $# -gt 0 ]]; then
