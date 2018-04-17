@@ -25,6 +25,10 @@ function allocate() {
     fi
 }
 
+# check if then is given
+if [[ $# -gt 0 ]]; then
+    thenCheck=$(echo ${1} | awk -F"then" '{print')
+
 # Manupulating the options given
 if [[ $# -gt 0 ]]; then
     commands=$(echo "${1}" | cut -d ':' -f '1')
