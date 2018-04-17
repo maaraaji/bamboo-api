@@ -6,9 +6,11 @@ N=$(tput sgr0)
 U=$(tput smul)
 
 # Option checks
-validOption=0
-when=""
-dir="$(dirname ${0})"
+function init() {
+    validOption=0
+    when=""
+    dir="$(dirname ${0})"
+}
 
 # Usage sourcing
 . $(dirname ${0})/usage.sh
@@ -39,9 +41,12 @@ function executeMain() {
         # echo A: ${arguments}
         # echo W: ${when}
         if [[ ! "${when}" = "" ]]; then
-            . $(dirname ${0})/subCmd/apiCalls.sh "${arguments}" "${when}";
+            apiOutput=$(. $(dirname ${0})/subCmd/apiCalls.sh "${arguments}" "${when}");
+            echo "${apiOutput}"
+            # echo "Executed\n"
         else
             . $(dirname ${0})/subCmd/apiCalls.sh "${arguments}"; 
+            # echo "Executed\n"
         fi
     else
         usage; 
@@ -56,6 +61,7 @@ if [[ $# -gt 0 ]]; then
     echo "${thenCheck}" | while read cmd; do
         (( ln++ ))
         # echo ${ln}: ${cmd}
+        init
         commandCheck ${cmd}
         executeMain
     done

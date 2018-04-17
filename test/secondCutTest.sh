@@ -19,7 +19,6 @@ function Footer() {
 # testCases="${s} projects:which=BB max=2 brief=plans: how many plans
 # ${s} projects how many projects"
 
-testCases="${s} projects:which=BB max=2 brief=plans: how many plans next projects how many projects"
 
 
 

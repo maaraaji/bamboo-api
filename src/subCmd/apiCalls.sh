@@ -46,6 +46,8 @@ function processingQueries() {
     if [[ ${passedArguments} =~ ":" ]]; then
         query=$(echo ${passedArguments} | cut -d ":" -f 2 )
         whatNeedsQuery=$(echo ${passedArguments} | cut -d ":" -f 1 )
+        # echo ${query}
+        # echo ${whatNeedsQuery}
         getDictValueAndFullPath "${dir}/config/curlsh.json" "${whatNeedsQuery}" "query"
         isQuery=0
         if [[ ! ${dictValue} = "" ]]; then
