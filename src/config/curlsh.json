@@ -11,7 +11,7 @@
                     "search": "searchTerm",
                     "max": "max-result"
                 },
-                "end": "true"
+                "which": "true"
             },
             "when": {
                 "selectObject":"",
@@ -42,13 +42,13 @@
         }
     },
     "projects":{
-        "uri": "rest/api/latest/project",
+        "uri": "rest/api/latest/project.json",
         "query": {
             "after" : {
                 "brief" : "expand",
                 "max": "max-result"
             },
-            "end" : "true"
+            "which" : "true"
         },
         "when": {
             "selectObject": "",
@@ -60,9 +60,10 @@
             "getPlanKey": "plans.plan[].planKey.key",
             "getShortName": "plans.plan[].shortName"
         },
-        "how" : {
+        "how": {
             "many": {
-                "plans": "plans.size"
+                "plans": "plans.size",
+                "projects": "projects.size"
             }
         }
     },
