@@ -1,5 +1,7 @@
-# Manipulation of bamboo API version 5.12 using shell scripting.
+# Manipulation of REST API using shell.
 ---
+No more worries about issuing curl with jq all the times. No more the worries of creating a new script or existing script if the new version of REST API is released.
+No more worries of getting information for your Chatbot through REST API and modify your script to manupulate it. Just update the JSON and call our Script it will do the job for you. Update the JSON programmatically if you are lazy enough to write it manually!
 
 ### Prerequisites
 
