@@ -27,9 +27,13 @@ function allocate() {
 
 # check if then is given
 if [[ $# -gt 0 ]]; then
-    echo ${@}
-    echo ${@} | sed 's| next |/\n|g'
-    # echo "${thenCheck}"
+    ln=0
+    thenCheck="$(echo -e "${@}" | sed -e "s/ next /,/g" | tr "," "\n")"
+    echo "${thenCheck}"
+    echo "${thenCheck}" | while read cmd; do
+        (( ln++ ))
+        echo ${ln} : ${cmd}; done
+    exit 1
 fi
 
 # Manupulating the options given
