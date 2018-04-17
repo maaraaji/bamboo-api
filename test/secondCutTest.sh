@@ -16,8 +16,10 @@ function Footer() {
 # ${s} search plans inPlans getProjectName when planName=bb2
 # ${s} search plans inPlans getPlanName when description=
 # ${s} search plans inPlans getPlanName when description=\"bb test build\""
-testCases="${s} projects:which=BB max=2 brief=plans: how many plans
-${s} projects how many projects"
+# testCases="${s} projects:which=BB max=2 brief=plans: how many plans
+# ${s} projects how many projects"
+
+testCases="${s} projects:which=BB max=2 brief=plans: how many plans next projects how many projects"
 
 
 

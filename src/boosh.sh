@@ -25,37 +25,41 @@ function allocate() {
     fi
 }
 
+# Manupulating the options given
+function commandCheck() {
+    commands=$(echo "${1}" | cut -d ':' -f '1')
+    commandValid=$(cat ${dir}/config/curlsh.json | jq 'has("'${commands}'")')
+    if [[ ${commandValid} = "true" ]]; then validOption=1; allocate ${@}; else usage; fi
+}
+
+function executeMain() {
+    # Make a bamboo call if valid options are given
+    if [[ ${validOption} == 1 ]]; then 
+        # . $(dirname ${0})/subCmd/bambooCalls.sh "${arguments}"; 
+        # echo A: ${arguments}
+        # echo W: ${when}
+        if [[ ! "${when}" = "" ]]; then
+            . $(dirname ${0})/subCmd/apiCalls.sh "${arguments}" "${when}";
+        else
+            . $(dirname ${0})/subCmd/apiCalls.sh "${arguments}"; 
+        fi
+    else
+        usage; 
+        exit 1
+    fi
+}
+
 # check if then is given
 if [[ $# -gt 0 ]]; then
     ln=0
     thenCheck="$(echo -e "${@}" | sed -e "s/ next /,/g" | tr "," "\n")"
-    echo "${thenCheck}"
     echo "${thenCheck}" | while read cmd; do
         (( ln++ ))
-        echo ${ln} : ${cmd}; done
-    exit 1
-fi
-
-# Manupulating the options given
-if [[ $# -gt 0 ]]; then
-    commands=$(echo "${1}" | cut -d ':' -f '1')
-    commandValid=$(cat ${dir}/config/curlsh.json | jq 'has("'${commands}'")')
-    if [[ ${commandValid} = "true" ]]; then validOption=1; allocate ${@}; else usage; fi
+        # echo ${ln}: ${cmd}
+        commandCheck ${cmd}
+        executeMain
+    done
 else
     usage
-    exit 1
-fi
-# Make a bamboo call if valid options are given
-if [[ ${validOption} == 1 ]]; then 
-    # . $(dirname ${0})/subCmd/bambooCalls.sh "${arguments}"; 
-    echo A: ${arguments}
-    echo W: ${when}
-    if [[ ! "${when}" = "" ]]; then
-        . $(dirname ${0})/subCmd/apiCalls.sh "${arguments}" "${when}";
-    else
-        . $(dirname ${0})/subCmd/apiCalls.sh "${arguments}"; 
-    fi
-else
-    usage; 
     exit 1
 fi
