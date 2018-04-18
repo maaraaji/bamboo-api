@@ -5,7 +5,7 @@
     },
     "search": {
         "plans": {
-            "uri": "rest/api/latest/search/plans.json",
+            "uri": "rest/api/latest/{search}/plans.json",
             "query": {
                 "after": {
                     "search": "searchTerm",
@@ -19,6 +19,11 @@
                 "planName": "searchEntity.planName",
                 "description": "searchEntity.description"
             },
+            "sub" :{
+                "search": {
+                    "def": "search"
+                }
+            },
             "howMany": "size",
             "inPlans": {
                 "getId": "searchResults[].searchEntity.id",
@@ -31,9 +36,13 @@
         "project":{
           "uri": "rest/api/latest/search/projects.json",
           "count": "size",
+          "when": {
+              "id" : "searchEntity.id"
+          },
           "sResult": {
               "getmeid": "searchResults[].id",
-              "needPN": "searchResults[].searchEntity.projectName"
+              "needPN": "searchResults[].searchEntity.projectName",
+              "needKey": "searchResults[].searchEntity.key"
           }
         },
         "users": {
@@ -41,7 +50,7 @@
             "specifics": ["users"]
         }
     },
-    "projects":{
+    "project":{
         "uri": "rest/api/latest/project.json",
         "query": {
             "after" : {
@@ -52,11 +61,21 @@
         },
         "when": {
             "selectObject": "",
-            "planKey": "planKey.key"
+            "planKey": "planKey.key",
+            "shortName": "shortName",
+            "name": "name"
         },
-        "inProjects": {
-            "getProjectKey": "key",
-            "getProjectName": "name",
+        "evalo":{
+            "irukku": "projects.size"
+        },
+        "la": {
+            "size": {
+                "venum": {
+                    "machi": "projects.size"
+                }
+            },
+            "getProjectKey": "projects.project[].key",
+            "getProjectName": "projects.project[].name",
             "getPlanKey": "plans.plan[].planKey.key",
             "getShortName": "plans.plan[].shortName"
         },
@@ -67,10 +86,21 @@
             }
         }
     },
-    "s": {
+    "server": {
         "uri": "rest/api/latest/server.json",
-        "onSd": {
-            "isItRunning": "state"
+        "is": {
+            "it": {
+                "running" : "state"
+            }
+        },
+        "run": {
+            "aavutha": {
+                "thambi": "state"
+            }
         }
+    },
+    "thambi": {
+        "uri": "rest/api/latest/server.json",
+        "irukiya": "state"
     }
 }

@@ -2,12 +2,12 @@
 
 passedArguments="${1}"
 whenArguments=$(echo "${2}" | sed 's|\"||g')
-# echo ${passedArguments}
-# echo ${whenArguments}
 queryParams=""
 uriEnd=""
 dir="$(dirname ${0})"
-# echo ${whenArguments}
+B=$(tput bold)
+N=$(tput sgr0)
+U=$(tput smul)
 
 function initGetDictFullPath() {
     dictValue=""
@@ -21,7 +21,7 @@ function initFieldValue() {
 }
 
 function getDictValueAndFullPath() {
-    fullPath=""
+    initGetDictFullPath
     whereToCheck=${1}
     inWhat=${2}
     whatToCheck=${3}
@@ -29,23 +29,21 @@ function getDictValueAndFullPath() {
     for x in ${inWhat[@]}; do
         fullPath=${fullPath}.${x}
         case ${success} in
-            0)  
-                if [[ $(cat ${whereToCheck} | jq ${fullPath} | jq "has(\"${whatToCheck}\")") = "true" ]]; then
-                    # echo "cat ${whereToCheck} | jq ${fullPath} | jq 'has(\"${whatToCheck}\")'"
-                    # echo "cat ${whereToCheck} | jq -r ${fullPath}.${whatToCheck}"
-                    dictValue=$(cat ${whereToCheck} | jq -r ${fullPath}.${whatToCheck})
-                    successPath=${fullPath}
-                    success=1
-                fi
-            ;;
+            0)  if [[ $(cat ${whereToCheck} | jq ${fullPath} | jq "has(\"${whatToCheck}\")") = "true" ]]; then
+                dictValue=$(cat ${whereToCheck} | jq -r ${fullPath}.${whatToCheck}); successPath=${fullPath}; success=1 ; fi ;;
         esac
     done
 }
 
 function processingQueries() {
     if [[ ${passedArguments} =~ ":" ]]; then
+        haveSubs=$(echo "${passedArguments}" | tr -cd ":" | wc -c)
+        sub=$(echo ${passedArguments} | cut -d ":" -f 3 )
         query=$(echo ${passedArguments} | cut -d ":" -f 2 )
         whatNeedsQuery=$(echo ${passedArguments} | cut -d ":" -f 1 )
+        # echo ${sub}
+        # echo ${query}
+        # echo ${whatNeedsQuery}
         getDictValueAndFullPath "${dir}/config/curlsh.json" "${whatNeedsQuery}" "query"
         isQuery=0
         if [[ ! ${dictValue} = "" ]]; then
@@ -54,10 +52,7 @@ function processingQueries() {
                 fieldValue=$(echo ${y} | cut -d "=" -f 2)
                 if [[ ${field} = "which" ]]; then
                     getDictValueAndFullPath "${dir}/config/curlsh.json" "${whatNeedsQuery}.query" "${field}"
-                    if [[ "${dictValue}" = "true" ]]; then
-                        uriEnd=/${fieldValue}.json
-                    fi
-                    initGetDictFullPath
+                    if [[ "${dictValue}" = "true" ]]; then uriEnd=/${fieldValue}.json; uriEnd=${uriEnd//\"/} ; fi
                 else 
                     getDictValueAndFullPath "${dir}/config/curlsh.json" "${whatNeedsQuery}.query.after" "${field}"
                     if [[ ! "${dictValue}" = "" ]]; then
@@ -68,25 +63,34 @@ function processingQueries() {
                             queryParams="${queryParams}&${dictValue}=${fieldValue}"
                         fi
                     fi
-                    initGetDictFullPath
                 fi
             done
         else echo "No queries configured Buddy!"
         fi
-        passedArguments="$(echo ${passedArguments} | sed "s|:${query}:||g" )"
+        if [[ ${haveSubs} -eq 3 ]]; then
+            passedArguments="$(echo ${passedArguments} | sed "s|:${query}:${sub}:||g" )"
+        else
+            passedArguments="$(echo ${passedArguments} | sed "s|:${query}:||g" )"
+            # echo ${uriEnd}
+        fi
+    fi
+}
+
+function processingSubstitutes() {
+    field=$(echo ${sub} | cut -d "=" -f 1)
+    fieldValue=$(echo ${sub} | cut -d "=" -f 2)
+    if [[ ! "${fieldValue}" = "" ]]; then
+        eval "${field}"="${fieldValue}"
+        substitutedValue=$(echo ${!field})
+        apiUrl=$(echo ${apiUrl} | sed "s|{.*}|${substitutedValue}|g")
     fi
 }
 
 function getUrlPathAndJqValues() {
     getDictValueAndFullPath "${dir}/config/curlsh.json" "${passedArguments}" "uri"
     apiUrl=${dictValue}
-    if [[ ! ${uriEnd} = "" ]]; then
-        apiUrl=${apiUrl/.json/}
-    fi
-    # echo ${fullPath}
+    if [[ ! ${uriEnd} = "" ]]; then apiUrl=${apiUrl/.json/} ; fi
     argumentValues=".$(cat ${dir}/config/curlsh.json | jq -r ${fullPath})"
-    # echo ${argumentValues}
-    initGetDictFullPath
     initFieldValue
 }
 
@@ -97,18 +101,19 @@ function processingWhen() {
     getDictValueAndFullPath "${dir}/config/curlsh.json" "${whatNeedsQuery}" "when"
     whatNeedsQuery=$(echo ${successPath} | sed 's|^\.||g')
     getDictValueAndFullPath "${dir}/config/curlsh.json" "${whatNeedsQuery}.when" "${field}"
-    withThis="|select(.${dictValue} == \"${value}\")|"
-    initGetDictFullPath
+    if [[ "${dictValue}" =~ "{" ]]; then echo "Condition: ${B}${field} not configured${N} using when buddy"; exit 1
+    else withThis="|select(.${dictValue} == \"${value}\")|"; fi
     getDictValueAndFullPath "${dir}/config/curlsh.json" "${whatNeedsQuery}.when" "selectObject"
     replaceWhen=${dictValue}
     argumentValues=$(echo ${argumentValues} | sed "s/\[\]./\[\]${withThis}\.${replaceWhen}/g")
-    initGetDictFullPath
     initFieldValue
 }
 
 processingQueries
 getUrlPathAndJqValues
-initGetDictFullPath
+if [[ ${haveSubs} -eq 3 && ! "${sub}" = "" ]]; then
+    processingSubstitutes
+fi
 if [[ ! ${whenArguments} = "" ]]; then
     processingWhen
 fi
