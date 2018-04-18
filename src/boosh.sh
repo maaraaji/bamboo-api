@@ -10,8 +10,14 @@ function init() {
     validOption=0
     when=""
     dir="$(dirname ${0})"
+    apiOutput=""
 }
 
+function initResult() {
+    result=""
+}
+
+init
 # Usage sourcing
 . $(dirname ${0})/usage.sh
 
@@ -34,19 +40,20 @@ function commandCheck() {
     if [[ ${commandValid} = "true" ]]; then validOption=1; allocate ${@}; else usage; fi
 }
 
+# Make a bamboo call if valid options are given
 function executeMain() {
-    # Make a bamboo call if valid options are given
     if [[ ${validOption} == 1 ]]; then 
         # . $(dirname ${0})/subCmd/bambooCalls.sh "${arguments}"; 
         # echo A: ${arguments}
         # echo W: ${when}
         if [[ ! "${when}" = "" ]]; then
-            apiOutput=$(. $(dirname ${0})/subCmd/apiCalls.sh "${arguments}" "${when}");
+            apiOutput=$(. $(dirname ${0})/subCmd/apiCalls.sh "${arguments}" "${when}")
             echo "${apiOutput}"
-            # echo "Executed\n"
+            # echo ""
         else
-            . $(dirname ${0})/subCmd/apiCalls.sh "${arguments}"; 
-            # echo "Executed\n"
+            apiOutput=$(. $(dirname ${0})/subCmd/apiCalls.sh "${arguments}") 
+            echo "${apiOutput}"
+            # echo ""
         fi
     else
         usage; 
@@ -58,12 +65,21 @@ function executeMain() {
 if [[ $# -gt 0 ]]; then
     ln=0
     thenCheck="$(echo -e "${@}" | sed -e "s/ next /,/g" | tr "," "\n")"
+    # echo ${thenCheck}
     echo "${thenCheck}" | while read cmd; do
-        (( ln++ ))
-        # echo ${ln}: ${cmd}
         init
-        commandCheck ${cmd}
-        executeMain
+        (( ln++ ))
+        if [[ ! "${result}" = "" ]]; then
+            cmd="${cmd/=store/=${result}}"
+        fi
+        if [[ ! "${cmd}" = "store" ]]; then
+            initResult
+            commandCheck ${cmd}
+            executeMain
+            result="${apiOutput}"
+        else
+            echo "Stored Result: ${result}"
+        fi
     done
 else
     usage
