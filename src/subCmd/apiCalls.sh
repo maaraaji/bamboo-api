@@ -37,7 +37,7 @@ function getDictValueAndFullPath() {
 
 function processingQueries() {
     if [[ ${passedArguments} =~ ":" ]]; then
-        queryCount=$(echo "${passedArguments}" | tr -cd ":" | wc -c)
+        haveSubs=$(echo "${passedArguments}" | tr -cd ":" | wc -c)
         sub=$(echo ${passedArguments} | cut -d ":" -f 3 )
         query=$(echo ${passedArguments} | cut -d ":" -f 2 )
         whatNeedsQuery=$(echo ${passedArguments} | cut -d ":" -f 1 )
@@ -67,23 +67,23 @@ function processingQueries() {
             done
         else echo "No queries configured Buddy!"
         fi
-        if [[ ${queryCount} -eq 3 ]]; then
+        if [[ ${haveSubs} -eq 3 ]]; then
             passedArguments="$(echo ${passedArguments} | sed "s|:${query}:${sub}:||g" )"
         else
             passedArguments="$(echo ${passedArguments} | sed "s|:${query}:||g" )"
-            echo ${uriEnd}
+            # echo ${uriEnd}
         fi
     fi
 }
 
 function processingSubstitutes() {
-    subField=$(echo ${sub} | cut -d "=" -f 1)
-    subFieldValue=$(echo ${sub} | cut -d "=" -f 2)
-    eval "${subField}"="${subFieldValue}"
-    substitutedValue=$(echo ${!subField})
-    modifiedApiUrl=$(echo ${apiUrl} | sed "s|{.*}|${substitutedValue}|g")
-    echo ${modifiedApiUrl}
-    echo "Hello ${!subField}"
+    field=$(echo ${sub} | cut -d "=" -f 1)
+    fieldValue=$(echo ${sub} | cut -d "=" -f 2)
+    if [[ ! "${fieldValue}" = "" ]]; then
+        eval "${field}"="${fieldValue}"
+        substitutedValue=$(echo ${!field})
+        apiUrl=$(echo ${apiUrl} | sed "s|{.*}|${substitutedValue}|g")
+    fi
 }
 
 function getUrlPathAndJqValues() {
@@ -111,8 +111,9 @@ function processingWhen() {
 
 processingQueries
 getUrlPathAndJqValues
-processingSubstitutes
-
+if [[ ${haveSubs} -eq 3 && ! "${sub}" = "" ]]; then
+    processingSubstitutes
+fi
 if [[ ! ${whenArguments} = "" ]]; then
     processingWhen
 fi
