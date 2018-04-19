@@ -8,6 +8,8 @@ dir="$(dirname ${0})"
 B=$(tput bold)
 N=$(tput sgr0)
 U=$(tput smul)
+# echo ${passedArguments}
+# echo ${whenArguments}
 
 function initGetDictFullPath() {
     dictValue=""

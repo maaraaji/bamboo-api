@@ -4,6 +4,9 @@ No more worries of issuing `curl` with `jq` all the times. No more the worries o
 
 Implementing a **`ChatBot`** that rely on REST input will be super easy. Talk to your chatbot like you talk with others. Just update the conversational sentences in a JSON as objects within objects and call our Script, it will do the job for you. Update the JSON programmatically if you are lazy enough to write it manually!
 
+### Overall Architecture
+![Architecture](getrest.svg)
+
 ---
 ### Prerequisites
 
