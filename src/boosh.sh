@@ -49,11 +49,11 @@ function executeMain() {
         if [[ ! "${when}" = "" ]]; then
             apiOutput=$(. $(dirname ${0})/subCmd/apiCalls.sh "${arguments}" "${when}")
             echo "${apiOutput}"
-            # echo ""
+            result="${apiOutput}"
         else
             apiOutput=$(. $(dirname ${0})/subCmd/apiCalls.sh "${arguments}") 
             echo "${apiOutput}"
-            # echo ""
+            result="${apiOutput}"
         fi
     else
         usage; 
@@ -76,7 +76,6 @@ if [[ $# -gt 0 ]]; then
             initResult
             commandCheck ${cmd}
             executeMain
-            result="${apiOutput}"
         else
             echo "Stored Result: ${result}"
         fi
