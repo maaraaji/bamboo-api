@@ -42,24 +42,18 @@ function commandCheck() {
 
 # Make a bamboo call if valid options are given
 function executeMain() {
-    resVar=${1}
-    echo "Main variable: ${resVar}"
     if [[ ${validOption} == 1 ]]; then 
         # . $(dirname ${0})/subCmd/bambooCalls.sh "${arguments}"; 
-        echo A: ${arguments}
-        echo W: ${when}
+        # echo A: ${arguments}
+        # echo W: ${when}
         if [[ ! "${when}" = "" ]]; then
             apiOutput=$(. $(dirname ${0})/subCmd/apiCalls.sh "${arguments}" "${when}")
-            echo "Api Output: ${apiOutput}"
-            echo "eval \"${resVar}\"=\"${apiOutput}\""
-            eval "${resVar}"="${apiOutput}"
+            echo "${apiOutput}"
+            # echo ""
         else
             apiOutput=$(. $(dirname ${0})/subCmd/apiCalls.sh "${arguments}") 
-            # echo "${apiOutput}"
-            echo "Api Output: ${apiOutput}"
-            # result="${apiOutput}"
-            echo "eval \"${resVar}\"=\"${apiOutput}\""
-            eval "${resVar}"="${apiOutput}"
+            echo "${apiOutput}"
+            # echo ""
         fi
     else
         usage; 
@@ -75,22 +69,16 @@ if [[ $# -gt 0 ]]; then
     echo "${thenCheck}" | while read cmd; do
         init
         (( ln++ ))
-        # variableName="result_${ln}"
-        (( ln-- )); variableName="result_${ln}"; (( ln++ ))
-        if [[ ! "${!variableName}" = "" ]]; then
-            # (( ln-- )); variableName="result_${ln}"; (( ln++ ))
-            echo "cmd=\"${cmd/=store/=${!variableName}}\""
-            cmd="${cmd/=store/=${!variableName}}"
-            variableName="result_${ln}"
+        if [[ ! "${result}" = "" ]]; then
+            cmd="${cmd/=store/=${result}}"
         fi
-        variableName="result_${ln}"
         if [[ ! "${cmd}" = "store" ]]; then
             initResult
             commandCheck ${cmd}
-            executeMain "${variableName}"
+            executeMain
+            result="${apiOutput}"
         else
-            (( ln-- )); variableName="result_${ln}"; (( ln++ ))
-            echo "${variableName}: ${!variableName}"
+            echo "Stored Result: ${result}"
         fi
     done
 else
